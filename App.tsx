@@ -1,21 +1,50 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { Text, View } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { useFonts } from "expo-font";
 
-export default function App() {
+import Welcome from "./src/views/Welcome";
+import Music from "./src/views/Music";
+import Banking from "./src/views/Banking";
+
+type Routes = {
+  Welcome: undefined;
+  Music: undefined;
+  Banking: undefined;
+};
+
+const fonts = {
+  "SFProDisplay-Bold": require("./src/assets/fonts/SF-Pro-Display-Bold.otf"),
+  "SFProDisplay-Semibold": require("./src/assets/fonts/SF-Pro-Display-Semibold.otf"),
+  "SFProDisplay-Regular": require("./src/assets/fonts/SF-Pro-Display-Regular.otf"),
+  "SFProDisplay-Medium": require("./src/assets/fonts/SF-Pro-Display-Medium.otf"),
+};
+
+const Stack = createStackNavigator<Routes>();
+
+const PlaygroundNavigation = () => {
+  const [loaded] = useFonts(fonts);
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Banking"
+          component={Banking}
+          options={{ header: () => null }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const App = () => {
+  return <PlaygroundNavigation />;
+};
+
+export default App;
