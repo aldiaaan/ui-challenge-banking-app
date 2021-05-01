@@ -1,16 +1,10 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Platform,
-  StatusBar,
-} from "react-native";
+import { StyleSheet, View, Dimensions, LayoutChangeEvent } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { SafeAreaView, useSafeAreaFrame } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AnimatedValueProvider, PageLayoutProvider } from "./context";
 import {
@@ -31,6 +25,18 @@ function Banking() {
   const hasExpanded = useSharedValue<number>(0);
   const activeIndex = useSharedValue<number>(0);
 
+  const [layout, setLayout] = React.useState({
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
+  });
+
+  const inset = useSafeAreaInsets();
+
+  const handleLayout = (e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout;
+    setLayout({ width, height });
+  };
+
   const mainStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: y.value }],
@@ -38,7 +44,7 @@ function Banking() {
   });
 
   return (
-    <SafeAreaView style={styles.root}>
+    <View style={[styles.root, { top: inset.top }]}>
       <AnimatedValueProvider
         value={{
           x,
@@ -49,24 +55,26 @@ function Banking() {
           isSwipingVertical,
         }}
       >
-        <View style={styles.container}>
-          <Header />
+        <View style={styles.container} onLayout={handleLayout}>
+          <PageLayoutProvider value={layout}>
+            <Header />
 
-          <Animated.View style={[styles.main, mainStyle]}>
-            <AddCard />
-            <Cards />
-            <Footer />
-          </Animated.View>
+            <Animated.View style={[styles.main, mainStyle]}>
+              <AddCard />
+              <Cards />
+              <Footer />
+            </Animated.View>
+          </PageLayoutProvider>
         </View>
       </AnimatedValueProvider>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "white",
+    // backgroundColor: "white",
     position: "relative",
   },
   container: {

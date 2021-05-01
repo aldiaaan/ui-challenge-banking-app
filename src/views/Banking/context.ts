@@ -23,8 +23,6 @@ export const [
 export interface PageLayoutContext {
   height: number;
   width: number;
-  x: number;
-  y: number;
 }
 
 export const [

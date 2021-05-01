@@ -26,7 +26,7 @@ import Svg, {
   ForeignObject,
 } from "react-native-svg";
 
-import { useAnimatedValueContext } from "./context";
+import { useAnimatedValueContext, usePageLayout } from "./context";
 import { profile } from "./const";
 import {
   HEADER_BOTTOM_SPACING,
@@ -188,6 +188,7 @@ const { width, height } = getDimension();
 
 function Header() {
   const { y, x, hasExpanded } = useAnimatedValueContext();
+  const { width, height } = usePageLayout();
 
   const handleGestureEvent = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
